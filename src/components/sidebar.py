@@ -3,6 +3,9 @@ Componente Visual: Barra Lateral (Sidebar) de filtros.
 """
 import streamlit as st
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 def render_sidebar(df: pd.DataFrame) -> tuple[list[int], list[str], list[str], list[str]]:
     """
@@ -20,11 +23,16 @@ def render_sidebar(df: pd.DataFrame) -> tuple[list[int], list[str], list[str], l
         st.sidebar.warning("Sem dados para filtrar.")
         return [], [], [], []
 
-    # Extrai opções únicas
-    anos_disp = sorted(df['ano'].unique())
-    sen_disp = sorted(df['senioridade'].unique())
-    cont_disp = sorted(df['contrato'].unique())
-    tam_disp = sorted(df['tamanho_empresa'].unique())
+    # Extrai opções únicas com tratamento de erro
+    try:
+        anos_disp = sorted(df['ano'].unique())
+        sen_disp = sorted(df['senioridade'].unique())
+        cont_disp = sorted(df['contrato'].unique())
+        tam_disp = sorted(df['tamanho_empresa'].unique())
+    except KeyError as e:
+        logger.error(f"Erro ao extrair filtros: Coluna não encontrada {e}", exc_info=True)
+        st.sidebar.error("Dados incompletos para carregar todos os filtros.")
+        return [], [], [], []
 
     # Controles multiselect
     anos_sel = st.sidebar.multiselect("Ano", anos_disp, default=anos_disp)

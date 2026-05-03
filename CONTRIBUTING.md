@@ -14,23 +14,28 @@ Obrigado pelo seu interesse em contribuir para o **Dashboard de Salários na Ár
 ## 2. Padrões de Código (Clean Code e SOLID)
 
 - **Type Hinting**: Sempre utilize anotações de tipo estático (`-> int`, `: pd.DataFrame`, etc.) nas assinaturas das funções.
-- **Docstrings**: Todas as funções, módulos e classes devem estar documentados seguindo o formato de Docstrings utilizado (baseado em Sphinx/Google).
-- **Separação de Responsabilidades**: Não adicione regras de negócio nos arquivos dentro de `src/components/`. A manipulação de dados pesada deve estar isolada ou no `filters.py` ou em serviços separados.
-- **Sem Magic Strings**: Se você precisa adicionar uma URL ou constante, coloque no `config.py`.
+- **Tratamento de Exceções**: Todos os componentes visuais devem tratar falhas de dados. Use os blocos `try-except` integrados com a biblioteca `logging`.
+- **Docstrings**: Todas as funções, módulos e classes devem estar documentados seguindo o formato de Docstrings utilizado.
+- **Separação de Responsabilidades**: Não adicione regras de negócio pesadas dentro de `src/components/`. Utilize ou crie módulos dentro de `src/` (como `filters.py`) para isso.
 
-## 3. Testes Locais
+## 3. Testes Locais e CI/CD
 
-Antes de abrir o Pull Request, você deve certificar-se de que os testes passam e que o código está seguindo os padrões de estilo.
+Antes de abrir o Pull Request, certifique-se de que o código segue os padrões exigidos (Linters) e que os testes passam. O nosso CI/CD via GitHub Actions validará essas etapas.
 
-1. **Rode os Linters**:
+### 1. Instalar as Dependências de Dev
 ```bash
-flake8 src tests
-black --check src tests
+pip install -e .[dev]
 ```
 
-2. **Execute os Testes Unitários**:
+### 2. Rodar os Linters
+```bash
+flake8 src tests app.py
+black --check src tests app.py
+```
+
+### 3. Executar os Testes Unitários
 ```bash
 pytest tests/ -v
 ```
 
-Apenas PRs que passam em todas as verificações do CI/CD (GitHub Actions) serão aprovados e integrados.
+Apenas PRs que passam em todas as verificações do CI/CD (GitHub Actions) serão analisados para integração na `main`.

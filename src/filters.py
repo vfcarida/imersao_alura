@@ -3,6 +3,9 @@ Módulo de regras de negócio para filtragem.
 Isola a lógica de manipulação do DataFrame da lógica de interface.
 """
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 def apply_filters(
     df: pd.DataFrame, 
@@ -27,10 +30,17 @@ def apply_filters(
     if df.empty:
         return df
         
-    df_filtrado = df[
-        (df['ano'].isin(anos)) &
-        (df['senioridade'].isin(senioridades)) &
-        (df['contrato'].isin(contratos)) &
-        (df['tamanho_empresa'].isin(tamanhos))
-    ]
-    return df_filtrado
+    try:
+        df_filtrado = df[
+            (df['ano'].isin(anos)) &
+            (df['senioridade'].isin(senioridades)) &
+            (df['contrato'].isin(contratos)) &
+            (df['tamanho_empresa'].isin(tamanhos))
+        ]
+        return df_filtrado
+    except KeyError as e:
+        logger.error(f"Erro ao filtrar: Coluna ausente {e}")
+        return pd.DataFrame(columns=df.columns)
+    except Exception as e:
+        logger.error(f"Erro inesperado na filtragem: {e}", exc_info=True)
+        return pd.DataFrame(columns=df.columns)

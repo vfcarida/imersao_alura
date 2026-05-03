@@ -2,12 +2,6 @@
 Ponto de entrada do aplicativo Streamlit.
 Orquestra o carregamento de dados, filtros e renderização dos componentes.
 """
-import sys
-import os
-
-# Ajusta o sys.path para garantir a importação absoluta dos módulos da pasta src/
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import streamlit as st
 from src.config import PAGE_TITLE, PAGE_ICON, LAYOUT
 from src.data_loader import load_data
